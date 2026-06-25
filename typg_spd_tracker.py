@@ -75,3 +75,35 @@ accuracy = (correct_words / total_words) * 100 if total_words > 0 else 0
 
 print(f'Accuracy: {round(accuracy,2):>11}')
 print()
+
+
+#   STORE DATA OF LAST 5 SESSIONS
+
+base_dir = os.path.dirname(os.path.abspath(__file__))
+file = os.path.join(base_dir, 'typing_history.csv')
+
+if not os.path.exists(file):
+    with open(file, 'w') as f:
+        f.write('time,wpm,mistakes,accuracy\n')
+
+with open(file, 'a') as f:
+    f.write(f'{round(time_taken,2)}, {round(WPM)}, {mistakes}, {round(accuracy,2)}\n')
+
+with open(file, 'r') as f:
+    lines = f.readlines()
+
+header = lines[0]
+data = lines[1:]
+last5 = data[-5:]
+
+with open(file, 'w') as f:
+    f.write(header)
+    f.writelines(last5)
+
+print("No. | Time(sec) | WPM | Mistakes | Accuracy")
+
+i = 1
+for line in last5:
+    t, wpm, mis, acc = line.strip().split(',')
+    print(f'{i:<4} |  {t:<10} |  {wpm:<5} |  {mis:<9} |  {acc}%')
+    i += 1
