@@ -35,58 +35,43 @@ print(f"Word Typed: {words:>6}")
 
 if time_taken > 0:
     WPM = words / (time_taken / 60)
-    print(f"Typing Speed: {round(WPM):>4} WPM")
+    print(f"Typing Speed: {round(WPM):>5} WPM")
 
 #   MISTAKES AND ACCURACY
 
 original_words = type_text.split()
 typed_words = typed.split()
 
-# mistakes = 0
-# for i in range (min(len(original_words), len(typed_words))):
-#     if original_words[i] != typed_words[i]:
-#         mistakes += 1
-# mistakes += abs(len(original_words) - len(typed_words))
-# print(f"Mistakes: {mistakes:>8}")
 
-
-# correct_words = 0
-# total_words = 0
-
-# for i in range(min(len(original_words), len(typed_words))):
-#     org_words = original_words[i]
-#     tpd_words = typed_words[i]
-
-#     total_words += max(len(org_words), len(tpd_words))
-
-#     for j in range(min(len(org_words), len(tpd_words))):
-#         if org_words[j] == tpd_words[j]:
-#             correct_words += 1
-
-# for i in range(min(len(original_words),len(typed_words)), max(len(original_words),len(typed_words))):
-#     if i < len(original_words):
-#         total_words += len(original_words[i])
-#     else:
-#         total_words += len(typed_words[i])
-
-# accuracy = (correct_words / total_words) * 100 if total_words > 0 else 0
-# print(f'Accuracy: {round(accuracy,2):>11}')
-
-
-matcher = difflib.SequenceMatcher(None,original_words,typed_words)
+matcher = difflib.SequenceMatcher(None, type_text, typed)
 
 mistakes = 0
-correct_words = 0
 
 for tag, i1, i2, j1, j2 in matcher.get_opcodes():
-    if tag == "equal":
-        correct_words += (i2 - i1)
-    else:
-        mistakes += max((i2 - i1),(j2 - j1))
+    if tag != "equal":
+        mistakes += max(i2 - i1, j2 - j1)
+print(f"Mistakes: {mistakes:>8}")
 
-total_words = len(original_words)
+correct_words = 0
+total_words = 0
+
+for i in range(min(len(original_words), len(typed_words))):
+    org_words = original_words[i]
+    tpd_words = typed_words[i]
+
+    total_words += max(len(org_words), len(tpd_words))
+
+    for j in range(min(len(org_words), len(tpd_words))):
+        if org_words[j] == tpd_words[j]:
+            correct_words += 1
+
+for i in range(min(len(original_words),len(typed_words)), max(len(original_words),len(typed_words))):
+    if i < len(original_words):
+        total_words += len(original_words[i])
+    else:
+        total_words += len(typed_words[i])
+
 accuracy = (correct_words / total_words) * 100 if total_words > 0 else 0
 
-print(f"Mistakes: {mistakes:>8}")
 print(f'Accuracy: {round(accuracy,2):>11}')
 print()
